@@ -591,6 +591,26 @@
     zellij = {
       enable = true;
       enableZshIntegration = true;
+      settings = {
+        keybinds = with builtins; let
+          binder = bind: let
+            keys = elemAt bind 0;
+            action = elemAt bind 1;
+            argKeys = map (k: "\"${k}\"") (lib.lists.flatten [keys]);
+          in {
+            name = "bind ${concatStringsSep " " argKeys}";
+            value = action;
+          };
+          layer = binds: (listToAttrs (map binder binds));
+        in {
+          normal = layer [
+            [["Ctrl h"] {MoveFocus = "Left";}]
+            [["Ctrl j"] {MoveFocus = "Down";}]
+            [["Ctrl k"] {MoveFocus = "Up";}]
+            [["Ctrl l"] {MoveFocus = "Right";}]
+          ];
+        };
+      };
     };
     tmux = {
       aggressiveResize = true;
