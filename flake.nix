@@ -17,7 +17,7 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, stylix, ssh-agent-switcher, ... }:
+  outputs = { nixpkgs, home-manager, stylix, ssh-agent-switcher, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
