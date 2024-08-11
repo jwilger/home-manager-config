@@ -1,5 +1,4 @@
-{ config, pkgs, stylix, lib, ... }:
-
+{ config, pkgs, lib, ssh-agent-switcher, ... }:
 {
   nixpkgs = {
     config = {
@@ -38,6 +37,19 @@
   };
 
   home.file.".zprofile".text = ''
+    if [ -n "SSH_CONNECTION" ]; then
+      echo "Welcome, ''${USER}!"
+      if [ ! -e "/tmp/ssh-agent.''${USER}" ]; then
+  	    if [ -n "''${ZSH_VERSION}" ]; then
+    	    eval ~/.nix-profile/bin/ssh-agent-switcher 2>/dev/null "&!"
+  	    else
+    	    ~/.nix-profile/bin/ssh-agent-switcher 2>/dev/null &
+    	    disown 2>/dev/null || true
+  	    fi
+      fi
+      export SSH_AUTH_SOCK="/tmp/ssh-agent.''${USER}" 
+    fi
+
     if [[ "$(tty)" == "/dev/tty1" ]]; then
       Hyprland
     fi
@@ -46,6 +58,7 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    ssh-agent-switcher
     swaynotificationcenter
     libnotify
     unzip
