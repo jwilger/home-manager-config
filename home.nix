@@ -408,6 +408,8 @@
         push = {
           default = "current";
         };
+
+        safe.directory = "/etc/nixos";
       };
     };
 
