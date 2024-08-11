@@ -533,6 +533,7 @@
           added_style = "fg:#E04D27";
           deleted_style = "fg:#E04D27";
           disabled = false;
+          only_nonzero_diffs = true;
         };
         git_status = {
           format = "([$all_status$ahead_behind]($style))";
