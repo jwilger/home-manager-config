@@ -32,7 +32,6 @@
 
   home.sessionVariables = {
     NIX_BUILD_SHELL = "zsh";
-    EDITOR = "nvim";
     SSH_AUTH_SOCK = "/home/jwilger/.1password/agent.sock";
   };
 
@@ -58,28 +57,18 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    nil
     ssh-agent-switcher
+    wl-clipboard
     swaynotificationcenter
     libnotify
     unzip
-    neovim
-    tree-sitter
-    gdu
-    bottom
-    python312
-    python312Packages.pynvim
-    nodePackages.nodejs
-    nodePackages.neovim
     powerline
     powerline-fonts
     powerline-symbols
     git-crypt
     _1password
     _1password-gui
-    gcc
-    gnumake
-    go
-    cargo
     nerdfonts
     noto-fonts-color-emoji
     slack
@@ -743,6 +732,22 @@
         layer = "overlay";
         terminal = "${pkgs.kitty}/bin/kitty";
         width = 40;
+      };
+    };
+    helix = {
+      enable = true;
+      defaultEditor = true;
+      settings = {
+        keys = {
+          normal = {
+            C-s = ":w";
+          };
+          insert = {
+            j = {
+              k = "normal_mode";
+            };
+          };
+        };
       };
     };
   };
