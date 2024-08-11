@@ -36,7 +36,7 @@
   };
 
   home.file.".zprofile".text = ''
-    if [ -n "SSH_CONNECTION" ]; then
+    if [ -n "''${SSH_CONNECTION}" ]; then
       echo "Welcome, ''${USER}!"
       if [ ! -e "/tmp/ssh-agent.''${USER}" ]; then
   	    if [ -n "''${ZSH_VERSION}" ]; then
