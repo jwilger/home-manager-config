@@ -67,8 +67,6 @@
     powerline-fonts
     powerline-symbols
     git-crypt
-    _1password
-    _1password-gui
     nerdfonts
     noto-fonts-color-emoji
     slack
@@ -367,10 +365,6 @@
         draw_minimal_borders = "yes";
         hide_window_decorations = "yes";
       };
-    };
-
-    firefox = {
-      enable = true;
     };
 
     lazygit = {
