@@ -37,15 +37,9 @@
     SSH_AUTH_SOCK = "/home/jwilger/.1password/agent.sock";
   };
 
-  home.file.".zlogin".text = ''
-    echo "Welcome, ''${USER}!"
-    if [ ! -e "/tmp/ssh-agent.''${USER}" ]; then
-      if [ -n "''${ZSH_VERSION}" ]; then
-        eval ~/.nix-profile/bin/ssh-agent-switcher 2>/dev/null "&!"
-      else
-        ~/.nix-profile/bin/ssh-agent-switcher 2>/dev/null &
-        disown 2>/dev/null || true
-      fi
+  home.file.".zprofile".text = ''
+    if [[ "$(tty)" == "/dev/tty1" ]]; then
+      Hyprland
     fi
   '';
 
@@ -262,10 +256,102 @@
     hyprlock = {
       enable = true;
       settings = {
-        source = "${./hyprlock/mocha.conf}";
-        "$bg_path" = "${./catppuccin-wallpapers/misc/virus.png}";
+        background = {
+          path = "${./catppuccin-wallpapers/misc/virus.png}";
+          blur_passes = 2;
+          contrast = 1;
+          brightness = 0.5;
+          vibrancy = 0.2;
+          vibrancy_darkness = 0.2;
+        };
+
+        general = {
+          no_fade_in = false;
+          no_fade_out = false;
+          hide_cursor = false;
+          grace = 0;
+          disable_loading_bar = true;
+        };
+
+        input-field = {
+          size = "800, 60";
+          outline_thickness = 3;
+          dots_size = 0.2; # Scale of input-field height, 0.2 - 0.8
+          dots_spacing = 0.35; # Scale of dots' absolute size, 0.0 - 1.0
+          dots_center = true;
+          outer_color = "rgba(0, 0, 0, 0.8)";
+          inner_color = "rgba(0, 0, 0, 0.0)";
+          font_color = "rgb(255,255,255)";
+          fade_on_empty = false;
+          rounding = -1;
+          check_color = "rgb(204, 136, 34)";
+          placeholder_text = "<i>YOU SHALL NOT PASS...unless you have the right password, man.</i>";
+          hide_input = false;
+          position = "0, -200";
+          halign = "center";
+          valign = "center";
+        };
+
+        label = [
+          {
+            text = ''
+              cmd[update:1000] echo "$(date +"%A, %B %d")"
+            '';
+            color = "rgba (242, 243, 244, 0.75)";
+            font_size = 22;
+            font_family = "JetBrainsMono Nerd Font";
+            position = "0, 300";
+            halign = "center";
+            valign = "center";
+          }
+          {
+            text = ''
+              cmd[update:1000] echo "$(date +"%A, %B %d")"
+            '';
+            color = "rgba(242, 243, 244, 0.75)";
+            font_size = 22;
+            font_family = "JetBrainsMono Nerd Font";
+            position = "0, 300";
+            halign = "center";
+            valign = "center";
+          }
+          {
+            text = ''
+              cmd[update:1000] echo "$(date +"%A, %B %d")"
+            '';
+            color = "rgba(242, 243, 244, 0.75)";
+            font_size = 22;
+            font_family = "JetBrainsMono Nerd Font";
+            position = "0, 300";
+            halign = "center";
+            valign = "center";
+          }
+
+          {
+            text = ''
+              cmd[update:1000] echo "$(date +"%-I:%M")"
+            '';
+            color = "rgba(242, 243, 244, 0.75)";
+            font_size = 95;
+            font_family = "JetBrainsMono Nerd Font Extrabold";
+            position = "0, 200";
+            halign = "center";
+            valign = "center";
+          }
+        ];
+
+        image = [
+          {
+            path = "${./profile-picture.jpg}";
+            size = 400;
+            border_size = 2;
+            border_color = "#cdd6f4";
+            position = "0, -100";
+            halign = "center";
+            valign = "center";
+          }
+        ];
       };
-      extraConfig = builtins.readFile ./hyprlock/hyprlock.conf;
     };
     home-manager.enable = true;
 
