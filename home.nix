@@ -588,6 +588,10 @@
         };
       };
     };
+    zellij = {
+      enable = true;
+      enableZshIntegration = true;
+    };
     tmux = {
       aggressiveResize = true;
       baseIndex = 1;
@@ -737,6 +741,22 @@
         keys = {
           normal = {
             C-s = ":w";
+            Z = {
+              Z = ":write-buffer-close!";
+            };
+            space = {
+              e = [
+                ":new"
+                ":insert-output ${config.home.homeDirectory}/${config.xdg.configFile."helix/lf-pick".target}"
+                ":theme default"
+                "select_all"
+                "split_selection_on_newline"
+                "goto_file"
+                "goto_last_modified_file"
+                ":buffer-close!"
+                ":theme stylix"
+              ];
+            };
           };
           insert = {
             j = {
@@ -746,9 +766,8 @@
         };
       };
     };
-    yazi = {
+    lf = {
       enable = true;
-      enableZshIntegration = true;
     };
   };
 
@@ -888,4 +907,16 @@
       <dir>~/.nix-profile/share/fonts/</dir>
     </fontconfig>
   '';
+
+  xdg.configFile."helix/lf-pick" = {
+    text = ''
+      lfp(){
+        local TEMP=$(mktemp)
+        lf -selection-path=$TEMP
+        cat $TEMP
+      }
+      lfp
+    '';
+    executable = true;
+  };
 }
