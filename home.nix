@@ -746,6 +746,10 @@
         };
       };
     };
+    yazi = {
+      enable = true;
+      enableZshIntegration = true;
+    };
   };
 
   wayland.windowManager.hyprland = {
