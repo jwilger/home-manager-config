@@ -803,9 +803,7 @@
             };
           };
           insert = {
-            j = {
-              k = "normal_mode";
-            };
+            "C-space" = "normal_mode";
           };
         };
       };
