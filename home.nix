@@ -57,6 +57,11 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    zellij
+    hyprcursor
+    catppuccin-cursors.macchiatoGreen
+    zoom-us
+    clockify
     nil
     ssh-agent-switcher
     wl-clipboard
@@ -141,6 +146,7 @@
   };
 
   programs = {
+    obs-studio.enable = true;
     waybar = {
       enable = true;
       systemd.enable = true;
@@ -257,7 +263,7 @@
       enable = true;
       settings = {
         background = {
-          path = "${./catppuccin-wallpapers/misc/virus.png}";
+          path = "${./catppuccin-wallpapers/misc/cat-sound.png}";
           blur_passes = 2;
           contrast = 1;
           brightness = 0.5;
@@ -269,7 +275,7 @@
           no_fade_in = false;
           no_fade_out = false;
           hide_cursor = false;
-          grace = 0;
+          grace = 30;
           disable_loading_bar = true;
         };
 
@@ -589,30 +595,6 @@
         };
       };
     };
-    zellij = {
-      enable = true;
-      enableZshIntegration = true;
-      settings = {
-        keybinds = with builtins; let
-          binder = bind: let
-            keys = elemAt bind 0;
-            action = elemAt bind 1;
-            argKeys = map (k: "\"${k}\"") (lib.lists.flatten [keys]);
-          in {
-            name = "bind ${concatStringsSep " " argKeys}";
-            value = action;
-          };
-          layer = binds: (listToAttrs (map binder binds));
-        in {
-          normal = layer [
-            [["Ctrl h"] {MoveFocus = "Left";}]
-            [["Ctrl j"] {MoveFocus = "Down";}]
-            [["Ctrl k"] {MoveFocus = "Up";}]
-            [["Ctrl l"] {MoveFocus = "Right";}]
-          ];
-        };
-      };
-    };
     tmux = {
       aggressiveResize = true;
       baseIndex = 1;
@@ -759,11 +741,47 @@
       enable = true;
       defaultEditor = true;
       settings = {
+        editor = {
+          scroll-lines = 1;
+          cursorline = true;
+          auto-save = false;
+          completion-trigger-len = 1;
+          auto-pairs = true;
+          rulers = [80  120];
+          idle-timeout = 50;
+          true-color = true;
+          mouse = false;
+          color-modes = true;
+          cursor-shape = {
+            normal = "block";
+            insert = "bar";
+            select = "underline";
+          };
+          indent-guides = {
+            render = true;
+            character = "|";
+          };
+          lsp = {
+            display-messages = true;
+            display-inlay-hints = true;
+          };
+          statusline = {
+            left = ["mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding"];
+            center = [];
+            right = ["selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control"];
+          };
+        };
         keys = {
           normal = {
-            C-s = ":w";
             Z = {
-              Z = ":write-buffer-close!";
+              Z = ":write-quit";
+            };
+            x = {
+              x = "extend_line_below";
+              c = [
+                "extend_to_line_bounds"
+                "trim_selections"
+              ];
             };
             space = {
               e = [
@@ -777,6 +795,7 @@
                 ":buffer-close!"
                 ":theme stylix"
               ];
+              w = ":write";
             };
           };
           insert = {
@@ -800,11 +819,12 @@
 
     settings = {
       exec-once = [
-        "dbus-update-activation-environment --systemd --all"
+        "dbus-update-activation-environment --systemd --all WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "lxqt-policykit-agent"
         "${pkgs.slack}/bin/slack"
         "${pkgs._1password-gui}/bin/1password"
+        "${pkgs.solaar}/bin/solaar"
       ];
       monitor = ",preferred,auto,auto";
       "$terminal" = "kitty";
@@ -940,4 +960,88 @@
     '';
     executable = true;
   };
+
+  xdg.configFile."zellij/config.kdl".text = with config.lib.stylix.colors.withHashtag; ''
+    theme "stylix"
+    themes {
+      stylix {
+        fg "${base03}"
+        bg "${base05}"
+        black "${base00}"
+        red "${base08}"
+        green "${base0B}"
+        yellow "${base0A}"
+        blue "${base0D}"
+        magenta "${base0E}"
+        cyan "${base0C}"
+        white "${base07}"
+        orange "${base09}"
+      }
+    }
+    default_layout "compact"
+    mouse_mode false
+    mirror_session true
+    pane_frames false
+    ui {
+      pane_frames {
+        rounded_corners true
+      }
+    }
+    keybinds {
+      normal clear-defaults=true {
+        bind "F12" { SwitchToMode "locked"; }
+        bind "Ctrl a" { SwitchToMode "tmux"; }
+      }
+      locked clear-defaults=true {
+        bind "F12" { SwitchToMode "Normal"; }
+      }
+      tmux {
+        unbind "Ctrl b"
+        bind "s" {
+          LaunchOrFocusPlugin "session-manager" {
+            floating true
+            move_to_focused_tab true
+          };
+          SwitchToMode "Normal"
+        }
+        bind "[" { SwitchToMode "Scroll"; }
+        bind "Ctrl a" { Write 1; SwitchToMode "Normal"; }
+        bind "\\" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "-" { NewPane "Down"; SwitchToMode "Normal"; }
+        bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+        bind "c" { NewTab; SwitchToMode "Normal"; }
+        bind "," { SwitchToMode "RenameTab"; }
+        bind "i" { ToggleTab; SwitchToMode "Normal"; }
+        bind "p" { GoToPreviousTab; SwitchToMode "Normal"; }
+        bind "n" { GoToNextTab; SwitchToMode "Normal"; }
+        bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
+        bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
+        bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
+        bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
+        bind "d" { Detach; }
+        bind "Space" { NextSwapLayout; SwitchToMode "Normal"; }
+        bind "x" { CloseFocus; SwitchToMode "Normal"; }
+        bind "F" { TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }
+        bind "f" { NewPane "Right"; TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }
+        bind "1" { GoToTab 1; SwitchToMode "Normal"; }
+        bind "2" { GoToTab 2; SwitchToMode "Normal"; }
+        bind "3" { GoToTab 3; SwitchToMode "Normal"; }
+        bind "4" { GoToTab 4; SwitchToMode "Normal"; }
+        bind "5" { GoToTab 5; SwitchToMode "Normal"; }
+        bind "6" { GoToTab 6; SwitchToMode "Normal"; }
+        bind "7" { GoToTab 7; SwitchToMode "Normal"; }
+        bind "8" { GoToTab 8; SwitchToMode "Normal"; }
+        bind "9" { GoToTab 9; SwitchToMode "Normal"; }
+        bind "e" { EditScrollback; SwitchToMode "Normal"; }
+        bind "m" { SwitchToMode "move"; }
+        bind "=" { SwitchToMode "resize"; }
+      }
+      shared_except "locked" {
+        bind "F12" { SwitchToMode "Locked"; }
+      }
+    }
+  '';
+
+  xdg.configFile."solaar/config.yaml".source = ./solaar_config.yaml;
+  xdg.configFile."solaar/rules.yaml".source = ./solaar_rules.yaml;
 }
