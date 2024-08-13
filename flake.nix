@@ -15,10 +15,20 @@
       url = "/home/jwilger/projects/ssh-agent-switcher";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zjstatus = {
+      url = "github:dj95/zjstatus";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, home-manager, stylix, ssh-agent-switcher, ... }:
+  outputs = { nixpkgs, home-manager, stylix, ssh-agent-switcher, zjstatus, ... }@inputs:
     let
+      inherit (inputs.nixpkgs.lib) attrValues;
+      overlays = with inputs; [
+        (final: prev: {
+          zjstatus = zjstatus.packages.${prev.system}.default;
+        })
+      ];
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
     in {
