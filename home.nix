@@ -782,6 +782,11 @@
                 "trim_selections"
               ];
             };
+            C-j = [
+              "open_below"
+              ":insert-output echo -n ' '"
+              "normal_mode"
+            ];
             space = {
               e = [
                 ":new"
