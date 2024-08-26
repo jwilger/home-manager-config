@@ -749,17 +749,27 @@
     helix = {
       enable = true;
       defaultEditor = true;
+      languages = {
+        language = [
+          {
+            name = "elixir";
+            auto-format = true;
+          }
+        ];
+      };
       settings = {
         editor = {
           scroll-lines = 1;
           cursorline = true;
+          scrolloff = 20;
+          popup-border = "all";
           auto-save = false;
+          auto-format = true;
           completion-trigger-len = 1;
           auto-pairs = true;
-          rulers = [80  120];
           idle-timeout = 50;
           true-color = true;
-          mouse = false;
+          mouse = true;
           color-modes = true;
           cursor-shape = {
             normal = "block";
@@ -770,13 +780,23 @@
             render = true;
           };
           lsp = {
-            display-messages = true;
-            display-inlay-hints = true;
+            auto-signature-help = false;
+            display-messages = false;
+            display-inlay-hints = false;
           };
           statusline = {
             left = ["mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding"];
             center = [];
             right = ["selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control"];
+          };
+          whitespace = {
+            render = {
+              space = "none";
+              tab = "all";
+              nbsp = "all";
+              nnbsp = "all";
+              newline = "all";
+            };
           };
         };
         keys = {
@@ -784,19 +804,17 @@
             Z = {
               Z = ":write-quit";
             };
-            x = {
-              x = "extend_line_below";
-              c = [
-                "extend_to_line_bounds"
-                "trim_selections"
-              ];
-            };
-            C-j = [
+            ret = [
               "open_below"
               ":insert-output echo -n ' '"
               "normal_mode"
             ];
+            C-h = "jump_view_left";
+            C-j = "jump_view_down";
+            C-k = "jump_view_up";
+            C-l = "jump_view_right";
             space = {
+              c = ":bc";
               e = [
                 ":new"
                 ":insert-output ${config.home.homeDirectory}/${config.xdg.configFile."helix/lf-pick".target}"
@@ -808,7 +826,7 @@
                 ":buffer-close!"
                 ":theme stylix"
               ];
-              w = ":write";
+              w = [":format" ":write!"];
             };
           };
           insert = {
