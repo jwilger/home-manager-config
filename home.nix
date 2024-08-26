@@ -928,10 +928,10 @@
       bind = $mainMod, J, movefocus, d
       bind = $mainMod CONTROL, J, changegroupactive, f
       bind = $mainMod CONTROL, K, changegroupactive, b
-      bind = $mainMod SHIFT, h, swapwindow, l
-      bind = $mainMod SHIFT, j, swapwindow, d
-      bind = $mainMod SHIFT, k, swapwindow, u
-      bind = $mainMod SHIFT, l, swapwindow, r
+      bind = $mainMod SHIFT, h, movewindoworgroup, l
+      bind = $mainMod SHIFT, j, movewindoworgroup, d
+      bind = $mainMod SHIFT, k, movewindoworgroup, u
+      bind = $mainMod SHIFT, l, movewindoworgroup, r
       bind = $mainMod, 1, workspace, 1
       bind = $mainMod, 2, workspace, 2
       bind = $mainMod, 3, workspace, 3
