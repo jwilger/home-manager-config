@@ -918,6 +918,7 @@
       bind = $mainMod, C, killactive,
       bind = $mainMod, E, exec, $fileManager
       bind = $mainMod, F, togglefloating,
+      bind = $mainMod, G, togglegroup,
       bind = $mainMod, SPACE, exec, $menu
       bind = $mainMod, P, pseudo,
       bind = $mainMod, T, togglesplit,
@@ -925,6 +926,12 @@
       bind = $mainMod, L, movefocus, r
       bind = $mainMod, K, movefocus, u
       bind = $mainMod, J, movefocus, d
+      bind = $mainMod CONTROL, J, changegroupactive, f
+      bind = $mainMod CONTROL, K, changegroupactive, b
+      bind = $mainMod SHIFT, h, swapwindow, l
+      bind = $mainMod SHIFT, j, swapwindow, d
+      bind = $mainMod SHIFT, k, swapwindow, u
+      bind = $mainMod SHIFT, l, swapwindow, r
       bind = $mainMod, 1, workspace, 1
       bind = $mainMod, 2, workspace, 2
       bind = $mainMod, 3, workspace, 3
