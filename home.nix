@@ -172,6 +172,7 @@
           modules-center = [
           ];
           modules-right = [
+            "idle_inhibitor"
             "cpu"
             "memory"
             "disk"
@@ -180,6 +181,14 @@
             "tray"
             "clock"
           ];
+
+          idle_inhibitor = {
+            format = "{icon}";
+            format-icons = {
+              activated = "";
+              deactivated = "";
+            };
+          };
 
           cpu = {
             format = "󰻠 {usage}%";
