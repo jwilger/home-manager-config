@@ -1015,9 +1015,9 @@
       }
     }
     default_layout "compact"
-    mouse_mode false
+    mouse_mode true
     mirror_session true
-    pane_frames false
+    pane_frames true
     ui {
       pane_frames {
         rounded_corners true
