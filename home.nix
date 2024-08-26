@@ -382,6 +382,8 @@
       };
     };
 
+    htop.enable = true;
+
     lazygit = {
       enable = true;
       settings = {
