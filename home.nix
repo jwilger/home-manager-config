@@ -852,8 +852,8 @@
         "systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "lxqt-policykit-agent"
         "${pkgs.slack}/bin/slack"
-        "${pkgs._1password-gui}/bin/1password"
-        "${pkgs.solaar}/bin/solaar"
+        "${pkgs._1password-gui}/bin/1password --silent"
+        "${pkgs.solaar}/bin/solaar -w hide"
       ];
       monitor = ",preferred,auto,auto";
       "$terminal" = "kitty";
