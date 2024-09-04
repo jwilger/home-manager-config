@@ -57,6 +57,8 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    spotify
+    protonmail-desktop
     zellij
     hyprcursor
     catppuccin-cursors.macchiatoGreen
@@ -724,6 +726,11 @@
         tma = "tmux attach";
         tm = "tmuxinator start";
 
+        # zellij
+        zz = ''
+          zellij --layout=.zellij.kdl attach -c "`basename \"$PWD\"`"
+        '';
+
         # Neovim
         vi = "nvim";
         vim = "nvim";
@@ -833,6 +840,9 @@
           };
           insert = {
             "C-space" = "normal_mode";
+            "C-j" = "move_line_down";
+            "C-k" = "move_line_up";
+            "C-S-k" = "kill_to_line_end";
           };
         };
       };
@@ -889,6 +899,9 @@
       cursor = {
         inactive_timeout = 10;
         hide_on_key_press = true;
+      };
+      input = {
+        follow_mouse = false;
       };
 
       windowrulev2 = "suppressevent maximize, class:.*";
