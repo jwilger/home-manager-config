@@ -148,6 +148,7 @@
   };
 
   programs = {
+    sioyek.enable = true;
     obs-studio.enable = true;
     waybar = {
       enable = true;
