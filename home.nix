@@ -768,6 +768,7 @@
         ];
       };
       settings = {
+        theme = lib.mkForce "catppuccin_macchiato";
         editor = {
           scroll-lines = 1;
           cursorline = true;
