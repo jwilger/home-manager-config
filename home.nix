@@ -1015,6 +1015,7 @@
   };
 
   xdg.configFile."zellij/config.kdl".text = with config.lib.stylix.colors.withHashtag; ''
+    session_serialization false
     theme "stylix"
     themes {
       stylix {
