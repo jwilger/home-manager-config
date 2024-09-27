@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ssh-agent-switcher, ... }:
+{ config, pkgs, lib, inputs, ... }:
 {
   nixpkgs = {
     config = {
@@ -12,139 +12,136 @@
     image = ./catppuccin-wallpapers/misc/cat-sound.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     polarity = "dark";
+    targets = {
+      neovim.enable = false;
+    };
   };
 
   news.display = "silent";
+  home = {
 
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
-  home.username = "jwilger";
-  home.homeDirectory = "/home/jwilger";
+    # Home Manager needs a bit of information about you and the paths it should
+    # manage.
+    username = "jwilger";
+    homeDirectory = "/home/jwilger";
 
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
-  # release notes.
-  home.stateVersion = "24.05"; # Please read the comment before changing.
+    # This value determines the Home Manager release that your configuration is
+    # compatible with. This helps avoid breakage when a new Home Manager release
+    # introduces backwards incompatible changes.
+    #
+    # You should not change this value, even if you update Home Manager. If you do
+    # want to update the value, then make sure to first check the Home Manager
+    # release notes.
+    stateVersion = "24.05"; # Please read the comment before changing.
 
-  home.sessionVariables = {
-    NIX_BUILD_SHELL = "zsh";
-    SSH_AUTH_SOCK = "/home/jwilger/.1password/agent.sock";
-  };
+    sessionVariables = {
+      NIX_BUILD_SHELL = "zsh";
+    };
 
-  home.file.".zprofile".text = ''
-    if [ -n "''${SSH_CONNECTION}" ]; then
-      echo "Welcome, ''${USER}!"
-      if [ ! -e "/tmp/ssh-agent.''${USER}" ]; then
-  	    if [ -n "''${ZSH_VERSION}" ]; then
-    	    eval ~/.nix-profile/bin/ssh-agent-switcher 2>/dev/null "&!"
-  	    else
-    	    ~/.nix-profile/bin/ssh-agent-switcher 2>/dev/null &
-    	    disown 2>/dev/null || true
-  	    fi
+    file.".login".text = ''
+      if [[ -z "$SSH_AUTH_SOCK" ]]; then
+        export SSH_AUTH_SOCK="/home/jwilger/.1password/agent.sock"
       fi
-      export SSH_AUTH_SOCK="/tmp/ssh-agent.''${USER}" 
-    fi
 
-    if [[ "$(tty)" == "/dev/tty1" ]]; then
-      Hyprland
-    fi
-  '';
+      if [[ "$(tty)" == "/dev/tty1" ]]; then
+        Hyprland
+      fi
+    '';
 
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
-  home.packages = with pkgs; [
-    spotify
-    protonmail-desktop
-    zellij
-    hyprcursor
-    catppuccin-cursors.macchiatoGreen
-    zoom-us
-    clockify
-    nil
-    ssh-agent-switcher
-    wl-clipboard
-    swaynotificationcenter
-    libnotify
-    unzip
-    powerline
-    powerline-fonts
-    powerline-symbols
-    git-crypt
-    nerdfonts
-    noto-fonts-color-emoji
-    slack
-    ripgrep
-    font-awesome
-  ];
+    # The home.packages option allows you to install Nix packages into your
+    # environment.
+    packages = with pkgs; [
+      inputs.nixvim.packages.${pkgs.system}.default
+      spotify
+      protonmail-desktop
+      zellij
+      hyprcursor
+      catppuccin-cursors.macchiatoGreen
+      zoom-us
+      clockify
+      nil
+      wl-clipboard
+      swaynotificationcenter
+      libnotify
+      unzip
+      powerline
+      powerline-fonts
+      powerline-symbols
+      git-crypt
+      nerdfonts
+      noto-fonts-color-emoji
+      slack
+      ripgrep
+      font-awesome
+    ];
 
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
-  home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
+    # Home Manager is pretty good at managing dotfiles. The primary way to manage
+    # plain files is through 'home.file'.
+    file = {
+      # # Building this configuration will create a copy of 'dotfiles/screenrc' in
+      # # the Nix store. Activating the configuration will then make '~/.screenrc' a
+      # # symlink to the Nix store copy.
+      # ".screenrc".source = dotfiles/screenrc;
 
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
+      # # You can also set the file content immediately.
+      # ".gradle/gradle.properties".text = ''
+      #   org.gradle.console=verbose
+      #   org.gradle.daemon.idletimeout=3600000
+      # '';
+    };
   };
+  services = {
 
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. These will be explicitly sourced when using a
-  # shell provided by Home Manager. If you don't want to manage your shell
-  # through Home Manager then you have to manually source 'hm-session-vars.sh'
-  # located at either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/jwilger/etc/profile.d/hm-session-vars.sh
-  #
+    # Home Manager can also manage your environment variables through
+    # 'home.sessionVariables'. These will be explicitly sourced when using a
+    # shell provided by Home Manager. If you don't want to manage your shell
+    # through Home Manager then you have to manually source 'hm-session-vars.sh'
+    # located at either
+    #
+    #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
+    #
+    # or
+    #
+    #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
+    #
+    # or
+    #
+    #  /etc/profiles/per-user/jwilger/etc/profile.d/hm-session-vars.sh
+    #
 
-  services.hypridle = {
-    enable = true;
-    settings = {
-      general = {
-        after_sleep_cmd = "hyprctl dispatch dpms on";
-        ignore_dbus_inhibit = false;
-        lock_cmd = "pidof hyprlock || hyprlock";
+    hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+          ignore_dbus_inhibit = false;
+          lock_cmd = "pidof hyprlock || hyprlock";
+        };
+        listener = [
+          {
+            timeout = 200;
+            on-timeout = "pidof hyprlock || hyprlock";
+          }
+          {
+            timeout = 600;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+        ];
       };
-      listener = [
-        {
-          timeout = 200;
-          on-timeout = "pidof hyprlock || hyprlock";
-        }
-        {
-          timeout = 600;
-          on-timeout = "hyprctl dispatch dpms off";
-          on-resume = "hyprctl dispatch dpms on";
-        }
-      ];
     };
-  };
 
-  services.hyprpaper = {
-    enable = true;
-    settings = {
-      ipc = "on";
-      splash = false;
+    hyprpaper = {
+      enable = true;
+      settings = {
+        ipc = "on";
+        splash = false;
+      };
     };
-  };
 
-  services.swaync = {
-    enable = true;
+    swaync = {
+      enable = true;
+    };
   };
 
   programs = {
@@ -412,14 +409,16 @@
       };
 
       extraConfig = {
-        gpg.format = "ssh";
-        gpg.ssh.allowedSignersFile = "${config.home.homeDirectory}/${config.xdg.configFile."ssh/allowed_signers".target}";
         commit.gpgsign = true;
         merge.conflictstyle = "zdiff3";
         merge.tool = "nvimdiff";
         diff.tool = "nvimdiff";
         user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU";
-        gpg.ssh.program = "op-ssh-sign";
+        gpg = {
+          format = "ssh";
+          ssh.allowedSignersFile = "${config.home.homeDirectory}/${config.xdg.configFile."ssh/allowed_signers".target}";
+          ssh.program = "op-ssh-sign";
+        };
         log.showSignature = true;
 
         pull = {
@@ -796,9 +795,9 @@
             display-inlay-hints = false;
           };
           statusline = {
-            left = ["mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding"];
-            center = [];
-            right = ["selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control"];
+            left = [ "mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding" ];
+            center = [ ];
+            right = [ "selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control" ];
           };
           whitespace = {
             render = {
@@ -837,7 +836,7 @@
                 ":buffer-close!"
                 ":theme stylix"
               ];
-              w = [":format" ":write!"];
+              w = [ ":format" ":write!" ];
             };
           };
           insert = {
@@ -988,114 +987,117 @@
       submap=reset
     '';
   };
+  xdg = {
+    configFile = {
+      "ssh/allowed_signers".text = ''
+        john@johnwilger.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU
+        johnwilger@artium.ai ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU
+      '';
 
-  xdg.configFile."ssh/allowed_signers".text = ''
-    john@johnwilger.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU
-    johnwilger@artium.ai ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU
-  '';
+      "fontconfig/conf.d/10-nix-fonts.conf".text = ''
+        <?xml version='1.0'?>
+        <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
+        <fontconfig>
+          <dir>~/.nix-profile/share/fonts/</dir>
+        </fontconfig>
+      '';
 
-  xdg.configFile."fontconfig/conf.d/10-nix-fonts.conf".text = ''
-    <?xml version='1.0'?>
-    <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
-    <fontconfig>
-      <dir>~/.nix-profile/share/fonts/</dir>
-    </fontconfig>
-  '';
+      "helix/lf-pick" = {
+        text = ''
+          lfp(){
+            local TEMP=$(mktemp)
+            lf -selection-path=$TEMP
+            cat $TEMP
+          }
+          lfp
+        '';
+        executable = true;
+      };
 
-  xdg.configFile."helix/lf-pick" = {
-    text = ''
-      lfp(){
-        local TEMP=$(mktemp)
-        lf -selection-path=$TEMP
-        cat $TEMP
-      }
-      lfp
-    '';
-    executable = true;
-  };
-
-  xdg.configFile."zellij/config.kdl".text = with config.lib.stylix.colors.withHashtag; ''
-    session_serialization false
-    theme "stylix"
-    themes {
-      stylix {
-        fg "${base03}"
-        bg "${base05}"
-        black "${base00}"
-        red "${base08}"
-        green "${base0B}"
-        yellow "${base0A}"
-        blue "${base0D}"
-        magenta "${base0E}"
-        cyan "${base0C}"
-        white "${base07}"
-        orange "${base09}"
-      }
-    }
-    default_layout "compact"
-    mouse_mode true
-    mirror_session true
-    pane_frames true
-    ui {
-      pane_frames {
-        rounded_corners true
-      }
-    }
-    keybinds {
-      normal clear-defaults=true {
-        bind "F12" { SwitchToMode "locked"; }
-        bind "Ctrl a" { SwitchToMode "tmux"; }
-      }
-      locked clear-defaults=true {
-        bind "F12" { SwitchToMode "Normal"; }
-      }
-      tmux {
-        unbind "Ctrl b"
-        bind "s" {
-          LaunchOrFocusPlugin "session-manager" {
-            floating true
-            move_to_focused_tab true
-          };
-          SwitchToMode "Normal"
+      "zellij/config.kdl".text = with config.lib.stylix.colors.withHashtag; ''
+        session_serialization false
+        theme "stylix"
+        themes {
+          stylix {
+            fg "${base03}"
+            bg "${base05}"
+            black "${base00}"
+            red "${base08}"
+            green "${base0B}"
+            yellow "${base0A}"
+            blue "${base0D}"
+            magenta "${base0E}"
+            cyan "${base0C}"
+            white "${base07}"
+            orange "${base09}"
+          }
         }
-        bind "[" { SwitchToMode "Scroll"; }
-        bind "Ctrl a" { Write 1; SwitchToMode "Normal"; }
-        bind "\\" { NewPane "Right"; SwitchToMode "Normal"; }
-        bind "-" { NewPane "Down"; SwitchToMode "Normal"; }
-        bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
-        bind "c" { NewTab; SwitchToMode "Normal"; }
-        bind "," { SwitchToMode "RenameTab"; }
-        bind "i" { ToggleTab; SwitchToMode "Normal"; }
-        bind "p" { GoToPreviousTab; SwitchToMode "Normal"; }
-        bind "n" { GoToNextTab; SwitchToMode "Normal"; }
-        bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
-        bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
-        bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
-        bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
-        bind "d" { Detach; }
-        bind "Space" { NextSwapLayout; SwitchToMode "Normal"; }
-        bind "x" { CloseFocus; SwitchToMode "Normal"; }
-        bind "F" { TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }
-        bind "f" { NewPane "Right"; TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }
-        bind "1" { GoToTab 1; SwitchToMode "Normal"; }
-        bind "2" { GoToTab 2; SwitchToMode "Normal"; }
-        bind "3" { GoToTab 3; SwitchToMode "Normal"; }
-        bind "4" { GoToTab 4; SwitchToMode "Normal"; }
-        bind "5" { GoToTab 5; SwitchToMode "Normal"; }
-        bind "6" { GoToTab 6; SwitchToMode "Normal"; }
-        bind "7" { GoToTab 7; SwitchToMode "Normal"; }
-        bind "8" { GoToTab 8; SwitchToMode "Normal"; }
-        bind "9" { GoToTab 9; SwitchToMode "Normal"; }
-        bind "e" { EditScrollback; SwitchToMode "Normal"; }
-        bind "m" { SwitchToMode "move"; }
-        bind "=" { SwitchToMode "resize"; }
-      }
-      shared_except "locked" {
-        bind "F12" { SwitchToMode "Locked"; }
-      }
-    }
-  '';
+        default_layout "compact"
+        mouse_mode true
+        mirror_session true
+        pane_frames true
+        ui {
+          pane_frames {
+            rounded_corners true
+          }
+        }
+        keybinds {
+          normal clear-defaults=true {
+            bind "F12" { SwitchToMode "locked"; }
+            bind "Ctrl a" { SwitchToMode "tmux"; }
+          }
+          locked clear-defaults=true {
+            bind "F12" { SwitchToMode "Normal"; }
+          }
+          tmux {
+            unbind "Ctrl b"
+            bind "s" {
+              LaunchOrFocusPlugin "session-manager" {
+                floating true
+                move_to_focused_tab true
+              };
+              SwitchToMode "Normal"
+            }
+            bind "[" { SwitchToMode "Scroll"; }
+            bind "Ctrl a" { Write 1; SwitchToMode "Normal"; }
+            bind "\\" { NewPane "Right"; SwitchToMode "Normal"; }
+            bind "-" { NewPane "Down"; SwitchToMode "Normal"; }
+            bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+            bind "c" { NewTab; SwitchToMode "Normal"; }
+            bind "," { SwitchToMode "RenameTab"; }
+            bind "i" { ToggleTab; SwitchToMode "Normal"; }
+            bind "p" { GoToPreviousTab; SwitchToMode "Normal"; }
+            bind "n" { GoToNextTab; SwitchToMode "Normal"; }
+            bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
+            bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
+            bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
+            bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
+            bind "d" { Detach; }
+            bind "Space" { NextSwapLayout; SwitchToMode "Normal"; }
+            bind "x" { CloseFocus; SwitchToMode "Normal"; }
+            bind "F" { TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }
+            bind "f" { NewPane "Right"; TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }
+            bind "1" { GoToTab 1; SwitchToMode "Normal"; }
+            bind "2" { GoToTab 2; SwitchToMode "Normal"; }
+            bind "3" { GoToTab 3; SwitchToMode "Normal"; }
+            bind "4" { GoToTab 4; SwitchToMode "Normal"; }
+            bind "5" { GoToTab 5; SwitchToMode "Normal"; }
+            bind "6" { GoToTab 6; SwitchToMode "Normal"; }
+            bind "7" { GoToTab 7; SwitchToMode "Normal"; }
+            bind "8" { GoToTab 8; SwitchToMode "Normal"; }
+            bind "9" { GoToTab 9; SwitchToMode "Normal"; }
+            bind "e" { EditScrollback; SwitchToMode "Normal"; }
+            bind "m" { SwitchToMode "move"; }
+            bind "=" { SwitchToMode "resize"; }
+          }
+          shared_except "locked" {
+            bind "F12" { SwitchToMode "Locked"; }
+          }
+        }
+      '';
 
-  xdg.configFile."solaar/config.yaml".source = ./solaar_config.yaml;
-  xdg.configFile."solaar/rules.yaml".source = ./solaar_rules.yaml;
+      "solaar/config.yaml".source = ./solaar_config.yaml;
+      "solaar/rules.yaml".source = ./solaar_rules.yaml;
+    };
+  };
 }

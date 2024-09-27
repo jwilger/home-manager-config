@@ -11,40 +11,34 @@
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    ssh-agent-switcher = {
-      url = "/home/jwilger/projects/ssh-agent-switcher";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     zjstatus = {
       url = "github:dj95/zjstatus";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixvim = {
+      url = "github:jwilger/nixvim";
+    };
   };
 
-  outputs = { nixpkgs, home-manager, stylix, ssh-agent-switcher, zjstatus, ... }@inputs:
+  outputs = { nixpkgs, home-manager, stylix, ... }@inputs:
     let
-      inherit (inputs.nixpkgs.lib) attrValues;
-      overlays = with inputs; [
-        (final: prev: {
-          zjstatus = zjstatus.packages.${prev.system}.default;
-        })
-      ];
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-    in {
+    in
+    {
       homeConfigurations."jwilger" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
         modules = [
-      	  stylix.homeManagerModules.stylix
-      	  ./home.nix
-      	];
+          stylix.homeManagerModules.stylix
+          ./home.nix
+        ];
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
         extraSpecialArgs = {
-          ssh-agent-switcher = ssh-agent-switcher.packages."${system}".ssh-agent-switcher;
+          inherit inputs;
         };
       };
     };
