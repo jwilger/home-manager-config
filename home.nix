@@ -52,7 +52,6 @@
       protonmail-desktop
       zellij
       catppuccin-cursors.macchiatoGreen
-      zoom-us
       clockify
       nil
       wl-clipboard
