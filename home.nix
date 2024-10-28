@@ -36,6 +36,7 @@
 
     sessionVariables = {
       NIX_BUILD_SHELL = "zsh";
+      EDITOR = "nvim";
     };
 
     file.".zlogin".text = ''
@@ -496,99 +497,6 @@
         width = 40;
       };
     };
-    helix = {
-      enable = true;
-      defaultEditor = true;
-      languages = {
-        language = [
-          {
-            name = "elixir";
-            auto-format = true;
-          }
-        ];
-      };
-      settings = {
-        theme = lib.mkForce "catppuccin_macchiato";
-        editor = {
-          scroll-lines = 1;
-          cursorline = true;
-          scrolloff = 20;
-          popup-border = "all";
-          auto-save = false;
-          auto-format = true;
-          completion-trigger-len = 1;
-          auto-pairs = true;
-          idle-timeout = 50;
-          true-color = true;
-          mouse = true;
-          color-modes = true;
-          cursor-shape = {
-            normal = "block";
-            insert = "bar";
-            select = "underline";
-          };
-          indent-guides = {
-            render = true;
-          };
-          lsp = {
-            auto-signature-help = false;
-            display-messages = false;
-            display-inlay-hints = false;
-          };
-          statusline = {
-            left = [ "mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding" ];
-            center = [ ];
-            right = [ "selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control" ];
-          };
-          whitespace = {
-            render = {
-              space = "none";
-              tab = "all";
-              nbsp = "all";
-              nnbsp = "all";
-              newline = "all";
-            };
-          };
-        };
-        keys = {
-          normal = {
-            Z = {
-              Z = ":write-quit";
-            };
-            ret = [
-              "open_below"
-              ":insert-output echo -n ' '"
-              "normal_mode"
-            ];
-            C-h = "jump_view_left";
-            C-j = "jump_view_down";
-            C-k = "jump_view_up";
-            C-l = "jump_view_right";
-            space = {
-              c = ":bc";
-              e = [
-                ":new"
-                ":insert-output ${config.home.homeDirectory}/${config.xdg.configFile."helix/lf-pick".target}"
-                ":theme default"
-                "select_all"
-                "split_selection_on_newline"
-                "goto_file"
-                "goto_last_modified_file"
-                ":buffer-close!"
-                ":theme stylix"
-              ];
-              w = [ ":format" ":write!" ];
-            };
-          };
-          insert = {
-            "C-space" = "normal_mode";
-            "C-j" = "move_line_down";
-            "C-k" = "move_line_up";
-            "C-S-k" = "kill_to_line_end";
-          };
-        };
-      };
-    };
     lf = {
       enable = true;
     };
@@ -608,18 +516,6 @@
           <dir>~/.nix-profile/share/fonts/</dir>
         </fontconfig>
       '';
-
-      "helix/lf-pick" = {
-        text = ''
-          lfp(){
-            local TEMP=$(mktemp)
-            lf -selection-path=$TEMP
-            cat $TEMP
-          }
-          lfp
-        '';
-        executable = true;
-      };
 
       "zellij/config.kdl".text = with config.lib.stylix.colors.withHashtag; ''
         session_serialization false
