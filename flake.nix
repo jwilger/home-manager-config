@@ -15,9 +15,6 @@
       url = "github:dj95/zjstatus";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixvim = {
-      url = "github:jwilger/nixvim";
-    };
   };
 
   outputs = { nixpkgs, home-manager, stylix, ... }@inputs:
