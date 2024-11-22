@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, lib, ... }:
 {
   nixpkgs = {
     config = {
@@ -36,7 +36,6 @@
 
     sessionVariables = {
       NIX_BUILD_SHELL = "zsh";
-      EDITOR = "nvim";
     };
 
     file.".zlogin".text = ''
@@ -48,7 +47,6 @@
     # The home.packages option allows you to install Nix packages into your
     # environment.
     packages = with pkgs; [
-      inputs.nixvim.packages.${pkgs.system}.default
       spotify
       protonmail-desktop
       zellij
@@ -69,42 +67,6 @@
       font-awesome
     ];
 
-    # Home Manager is pretty good at managing dotfiles. The primary way to manage
-    # plain files is through 'home.file'.
-    file = {
-      # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-      # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-      # # symlink to the Nix store copy.
-      # ".screenrc".source = dotfiles/screenrc;
-
-      # # You can also set the file content immediately.
-      # ".gradle/gradle.properties".text = ''
-      #   org.gradle.console=verbose
-      #   org.gradle.daemon.idletimeout=3600000
-      # '';
-    };
-  };
-  services = {
-
-    # Home Manager can also manage your environment variables through
-    # 'home.sessionVariables'. These will be explicitly sourced when using a
-    # shell provided by Home Manager. If you don't want to manage your shell
-    # through Home Manager then you have to manually source 'hm-session-vars.sh'
-    # located at either
-    #
-    #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-    #
-    # or
-    #
-    #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-    #
-    # or
-    #
-    #  /etc/profiles/per-user/jwilger/etc/profile.d/hm-session-vars.sh
-    #
-
-
-
   };
 
   programs = {
@@ -112,15 +74,115 @@
     obs-studio.enable = true;
     home-manager.enable = true;
 
-    kitty = {
+    neovim = {
       enable = true;
-      font = {
-        name = lib.mkForce "JetBrainsMono Nerd Font";
-        size = lib.mkForce 10.0;
-      };
+      defaultEditor = true;
+      viAlias = true;
+      vimAlias = true;
+      vimdiffAlias = true;
+      withNodeJs = true;
+      withPython3 = true;
+      withRuby = true;
+      extraWrapperArgs = [
+	  "--suffix"
+	  "LIBRARY_PATH"
+	  ":"
+	  "${lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.zlib ]}"
+	  "--suffix"
+	  "PKG_CONFIG_PATH"
+	  ":"
+	  "${lib.makeSearchPathOutput "dev" "lib/pkgconfig" [ pkgs.stdenv.cc.cc pkgs.zlib ]}"
+	];
+     extraLuaConfig = lib.readFile ./nvim/init.lua; 
+     plugins = with pkgs.vimPlugins; [
+     	plenary-nvim
+	telescope-nvim
+	telescope-fzy-native-nvim
+	catppuccin-nvim
+	nvim-web-devicons
+	which-key-nvim
+	{
+	  plugin = nvim-tree-lua;
+	  type = "lua";
+	  config = "require('nvim-tree').setup()";
+	}
+	{
+	  plugin = nvim-treesitter;
+	  type = "lua";
+	  config = lib.readFile ./nvim/treesitter.lua;
+	}
+	nvim-treesitter-context
+	nvim-treesitter-endwise
+	nvim-treesitter-pyfold
+	nvim-treesitter-textobjects
+	nvim-treesitter-textsubjects
+
+	nvim-treesitter-parsers.bash
+	nvim-treesitter-parsers.comment
+	nvim-treesitter-parsers.css
+	nvim-treesitter-parsers.csv
+	nvim-treesitter-parsers.diff
+	nvim-treesitter-parsers.dockerfile
+	nvim-treesitter-parsers.eex
+	nvim-treesitter-parsers.elixir
+	nvim-treesitter-parsers.erlang
+	nvim-treesitter-parsers.embedded_template
+	nvim-treesitter-parsers.git_config
+	nvim-treesitter-parsers.git_rebase
+	nvim-treesitter-parsers.gitattributes
+	nvim-treesitter-parsers.gitcommit
+	nvim-treesitter-parsers.gitignore
+	nvim-treesitter-parsers.heex
+	nvim-treesitter-parsers.html
+	nvim-treesitter-parsers.http
+	nvim-treesitter-parsers.ini
+	nvim-treesitter-parsers.javascript
+	nvim-treesitter-parsers.jsdoc
+	nvim-treesitter-parsers.json
+	nvim-treesitter-parsers.kdl
+	nvim-treesitter-parsers.latex
+	nvim-treesitter-parsers.lua
+	nvim-treesitter-parsers.luadoc
+	nvim-treesitter-parsers.make
+	nvim-treesitter-parsers.markdown
+	nvim-treesitter-parsers.markdown_inline
+	nvim-treesitter-parsers.mermaid
+	nvim-treesitter-parsers.nginx
+	nvim-treesitter-parsers.nix
+	nvim-treesitter-parsers.python
+	nvim-treesitter-parsers.regex
+	nvim-treesitter-parsers.ruby
+	nvim-treesitter-parsers.rust
+	nvim-treesitter-parsers.scss
+	nvim-treesitter-parsers.sql
+	nvim-treesitter-parsers.ssh_config
+	nvim-treesitter-parsers.svelte
+	nvim-treesitter-parsers.terraform
+	nvim-treesitter-parsers.tmux
+	nvim-treesitter-parsers.toml
+	nvim-treesitter-parsers.tsv
+	nvim-treesitter-parsers.typescript
+	nvim-treesitter-parsers.vim
+	nvim-treesitter-parsers.vimdoc
+	nvim-treesitter-parsers.xml
+	nvim-treesitter-parsers.xresources
+	nvim-treesitter-parsers.yaml
+     ];
+    };
+
+    alacritty = {
+      enable = true;
       settings = {
-        draw_minimal_borders = "yes";
-        hide_window_decorations = "yes";
+        window = {
+          decorations = "None";
+        };
+        font = {
+          normal = lib.mkForce { family = "JetBrains Mono Nerd Font"; style = "Regular"; };
+          size = lib.mkForce 10;
+        };
+        mouse = {
+          hide_when_typing = lib.mkForce true;
+        };
       };
     };
 
@@ -472,11 +534,6 @@
         zz = ''
           zellij --layout=.zellij.kdl attach -c "`basename \"$PWD\"`"
         '';
-
-        # Neovim
-        vi = "nvim";
-        vim = "nvim";
-        vimdiff = "nvim -d";
 
         # GitHub CLI
         ghr = "gh run watch";
