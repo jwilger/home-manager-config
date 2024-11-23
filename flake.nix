@@ -15,9 +15,12 @@
       url = "github:dj95/zjstatus";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nvim = {
+      url = "github:jwilger/neovim_nix_config";
+    };
   };
 
-  outputs = { nixpkgs, home-manager, stylix, ... }@inputs:
+  outputs = { nixpkgs, home-manager, stylix, nvim, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -29,6 +32,7 @@
         # the path to your home.nix.
         modules = [
           stylix.homeManagerModules.stylix
+	  nvim.homeModule
           ./home.nix
         ];
 
