@@ -20,27 +20,31 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, stylix, nvim, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      homeConfigurations."jwilger" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [
-          stylix.homeManagerModules.stylix
-	  nvim.homeModule
-          ./home.nix
-        ];
+  outputs = {
+    nixpkgs,
+    home-manager,
+    stylix,
+    nvim,
+    ...
+  } @ inputs: let
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+  in {
+    homeConfigurations."jwilger" = home-manager.lib.homeManagerConfiguration {
+      inherit pkgs;
+      # Specify your home configuration modules here, for example,
+      # the path to your home.nix.
+      modules = [
+        stylix.homeManagerModules.stylix
+        nvim.homeModule
+        ./home.nix
+      ];
 
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
-        extraSpecialArgs = {
-          inherit inputs;
-        };
+      # Optionally use extraSpecialArgs
+      # to pass through arguments to home.nix
+      extraSpecialArgs = {
+        inherit inputs;
       };
     };
+  };
 }
