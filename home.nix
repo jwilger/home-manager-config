@@ -69,14 +69,9 @@
       libnotify
       unzip
       powerline
-      powerline-fonts
-      powerline-symbols
       git-crypt
-      nerdfonts
-      noto-fonts-color-emoji
       slack
       ripgrep
-      font-awesome
     ];
   };
 
@@ -482,14 +477,6 @@
       "ssh/allowed_signers".text = ''
         john@johnwilger.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU
         johnwilger@artium.ai ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU
-      '';
-
-      "fontconfig/conf.d/10-nix-fonts.conf".text = ''
-        <?xml version='1.0'?>
-        <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
-        <fontconfig>
-          <dir>~/.nix-profile/share/fonts/</dir>
-        </fontconfig>
       '';
 
       "zellij/config.kdl".text = with config.lib.stylix.colors.withHashtag; ''
