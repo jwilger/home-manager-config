@@ -78,7 +78,6 @@
   programs = {
     sioyek.enable = true;
     obs-studio.enable = true;
-    home-manager.enable = true;
 
     alacritty = {
       enable = true;
