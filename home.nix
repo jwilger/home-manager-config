@@ -44,6 +44,8 @@
 
     sessionVariables = {
       NIX_BUILD_SHELL = "zsh";
+      VISUAL = "nvim";
+      EDITOR = "nvim";
     };
 
     file.".zlogin".text = ''
