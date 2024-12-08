@@ -173,6 +173,11 @@
       compression = true;
       forwardAgent = true;
       controlMaster = "yes";
+      matchBlocks = {
+          "hydrogen.slipstreamconsulting.net" = {
+              user = "admin";
+          };
+      };
     };
     starship = {
       enable = true;
