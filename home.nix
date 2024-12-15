@@ -57,6 +57,8 @@
     # The home.packages option allows you to install Nix packages into your
     # environment.
     packages = with pkgs; [
+      code-cursor
+      kdialog
       alejandra
       devenv
       spotify
@@ -125,6 +127,7 @@
       };
 
       extraConfig = {
+        init.defaultBranch = "main";
         commit.gpgsign = true;
         merge.conflictstyle = "zdiff3";
         merge.tool = "nvimdiff";
@@ -452,6 +455,10 @@
           zellij --layout=.zellij.kdl attach -c "`basename \"$PWD\"`"
         '';
 
+        za = ''
+          zellij attach --index 0
+        '';
+
         # GitHub CLI
         ghr = "gh run watch";
 
@@ -557,6 +564,7 @@
             bind "e" { EditScrollback; SwitchToMode "Normal"; }
             bind "m" { SwitchToMode "move"; }
             bind "=" { SwitchToMode "resize"; }
+            bind "q" { Quit; }
           }
           shared_except "locked" {
             bind "F12" { SwitchToMode "Locked"; }
