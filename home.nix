@@ -21,11 +21,6 @@
     };
   };
 
-  nvim = {
-    enable = true;
-    packageNames = ["nvim"];
-  };
-
   news.display = "silent";
   home = {
     # Home Manager needs a bit of information about you and the paths it should
@@ -40,7 +35,7 @@
     # You should not change this value, even if you update Home Manager. If you do
     # want to update the value, then make sure to first check the Home Manager
     # release notes.
-    stateVersion = "24.05"; # Please read the comment before changing.
+    stateVersion = "24.11"; # Please read the comment before changing.
 
     sessionVariables = {
       NIX_BUILD_SHELL = "zsh";
@@ -57,16 +52,11 @@
     # The home.packages option allows you to install Nix packages into your
     # environment.
     packages = with pkgs; [
-      code-cursor
-      kdialog
-      alejandra
+      gcc
       devenv
       spotify
       protonmail-desktop
       zellij
-      catppuccin-cursors.macchiatoGreen
-      clockify
-      nil
       wl-clipboard
       libnotify
       unzip
@@ -74,6 +64,8 @@
       git-crypt
       slack
       ripgrep
+      fd
+      fzf
     ];
   };
 
@@ -81,26 +73,18 @@
     sioyek.enable = true;
     obs-studio.enable = true;
 
-    alacritty = {
-      enable = true;
-      settings = {
-        window = {
-          decorations = "None";
-        };
-        font = {
-          normal = lib.mkForce {
-            family = "JetBrains Mono Nerd Font";
-            style = "Regular";
-          };
-          size = lib.mkForce 10;
-        };
-        mouse = {
-          hide_when_typing = lib.mkForce true;
-        };
-      };
-    };
-
     htop.enable = true;
+
+    neovim = {
+      defaultEditor = true;
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
+      vimdiffAlias = true;
+      withNodeJs = true;
+      withPython3 = true;
+      withRuby = true;
+    };
 
     lazygit = {
       enable = true;
@@ -332,73 +316,6 @@
         };
       };
     };
-    tmux = {
-      aggressiveResize = true;
-      baseIndex = 1;
-      enable = true;
-      extraConfig = ''
-        set -g default-terminal tmux-256color
-        set -g detach-on-destroy off
-        set -g set-clipboard on
-        is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE 'vim|neovim|nvim'"
-        bind-key -n C-h if-shell "$is_vim" "send-keys C-h" "select-pane -L"
-        bind-key -n C-j if-shell "$is_vim" "send-keys C-j" "select-pane -D"
-        bind-key -n C-k if-shell "$is_vim" "send-keys C-k" "select-pane -U"
-        bind-key -n C-l if-shell "$is_vim" "send-keys C-l" "select-pane -R"
-        setw -g mode-keys vi
-        bind h select-pane -L
-        bind j select-pane -D
-        bind k select-pane -U
-        bind l select-pane -R
-        bind-key -r C-h select-window -t :-
-        bind-key -r C-l select-window -t :+
-        bind -r H resize-pane -L 5
-        bind -r J resize-pane -D 5
-        bind -r K resize-pane -U 5
-        bind -r L resize-pane -R 5
-        set -g other-pane-width 10
-        bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-selection -x
-        bind i last-window
-        set -g renumber-windows on
-        bind-key C-a send-prefix
-        unbind-key C-z
-        bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded tmux configuration!"
-        bind \\ split-window -h
-        bind - split-window -v
-        setw -g monitor-activity off
-        set -g visual-activity on
-        set-window-option -g window-active-style bg=terminal,fg=terminal
-        set-window-option -g window-style bg=terminal,fg=gray
-      '';
-      keyMode = "vi";
-      mouse = true;
-      plugins = with pkgs; [
-        {
-          plugin = tmuxPlugins.catppuccin;
-          extraConfig = ''
-            source ${powerline}/share/tmux/powerline.conf
-            set -g @catppuccin_window_left_separator ""
-            set -g @catppuccin_window_right_separator " "
-            set -g @catppuccin_window_middle_separator " █"
-            set -g @catppuccin_window_number_position "right"
-            set -g @catppuccin_window_default_fill "number"
-            set -g @catppuccin_window_default_text "#W"
-            set -g @catppuccin_window_current_fill "number"
-            set -g @catppuccin_window_current_text "#W"
-            set -g @catppuccin_status_modules_right "user host session"
-            set -g @catppuccin_status_left_separator  " "
-            set -g @catppuccin_status_right_separator ""
-            set -g @catppuccin_status_fill "icon"
-            set -g @catppuccin_status_connect_separator "no"
-            set -g @catppuccin_directory_text "#{pane_current_path}"
-          '';
-        }
-        tmuxPlugins.yank
-        tmuxPlugins.prefix-highlight
-      ];
-      shortcut = "a";
-      tmuxinator.enable = true;
-    };
     zsh = {
       enable = true;
       enableCompletion = true;
@@ -446,10 +363,6 @@
         publicip = "dig +short myip.opendns.com @resolver1.opendns.com";
         localip = ''ifconfig | grep "inet " | grep -v 127.0.0.1 | cut -d\  -f2'';
 
-        # tmuxinator
-        tma = "tmux attach";
-        tm = "tmuxinator start";
-
         # zellij
         zz = ''
           zellij --layout=.zellij.kdl attach -c "`basename \"$PWD\"`"
@@ -474,7 +387,6 @@
       enable = true;
       settings.main = {
         layer = "overlay";
-        terminal = "${pkgs.kitty}/bin/kitty";
         width = 40;
       };
     };
