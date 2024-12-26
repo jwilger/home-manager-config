@@ -26,14 +26,21 @@
       monitor = ",preferred,auto,auto";
       "$terminal" = "kitty";
       general = {
-        border_size = 2;
-        gaps_in = 5;
-        gaps_out = 5;
+        border_size = 1;
+        gaps_in = 3;
+        gaps_out = 0;
         layout = "dwindle";
       };
       decoration = {
         rounding = 10;
+        active_opacity = 0.98;
+        inactive_opacity = 0.8;
         dim_inactive = false;
+        blur = {
+          enabled = true;
+          special = true;
+          popups = true;
+        };
       };
       dwindle = {
         pseudotile = true;
@@ -178,6 +185,7 @@
       NIX_BUILD_SHELL = "zsh";
       VISUAL = "nvim";
       EDITOR = "nvim";
+      SSH_AUTH_SOCK = "/home/jwilger/.1password/agent.sock";
     };
 
     file.".zlogin".text = ''
