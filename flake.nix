@@ -15,16 +15,14 @@
       url = "github:dj95/zjstatus";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nvim = {
-      url = "github:jwilger/neovim_nix_config";
-    };
+    hyprland.url = "github:hyprwm/Hyprland";
   };
 
   outputs = {
     nixpkgs,
     home-manager,
+    hyprland,
     stylix,
-    nvim,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -35,8 +33,13 @@
       # Specify your home configuration modules here, for example,
       # the path to your home.nix.
       modules = [
+        {
+          wayland.windowManager.hyprland = {
+            enable = true;
+            package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+          };
+        }
         stylix.homeManagerModules.stylix
-        nvim.homeModule
         ./home.nix
       ];
 
