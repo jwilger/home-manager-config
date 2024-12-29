@@ -20,6 +20,7 @@
       exec-once = [
         "dbus-update-activation-environment --systemd --all WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "${pkgs.waybar}/bin/waybar"
         "${pkgs._1password-gui}/bin/1password --silent"
         "${pkgs.solaar}/bin/solaar -w hide"
       ];
@@ -40,6 +41,8 @@
           enabled = true;
           special = true;
           popups = true;
+          passes = 2;
+          size = 16;
         };
       };
       dwindle = {
@@ -185,18 +188,12 @@
       NIX_BUILD_SHELL = "zsh";
       VISUAL = "nvim";
       EDITOR = "nvim";
-      SSH_AUTH_SOCK = "/home/jwilger/.1password/agent.sock";
     };
-
-    file.".zlogin".text = ''
-      if [[ -z "$SSH_AUTH_SOCK" ]]; then
-        export SSH_AUTH_SOCK="/home/jwilger/.1password/agent.sock"
-      fi
-    '';
 
     # The home.packages option allows you to install Nix packages into your
     # environment.
     packages = with pkgs; [
+      cargo
       nautilus
       pavucontrol
       hyprpolkitagent
@@ -801,6 +798,12 @@
       syntaxHighlighting = {
         enable = true;
       };
+
+      envExtra = ''
+        if [[ -z "$SSH_AUTH_SOCK" ]]; then
+          export SSH_AUTH_SOCK="/home/jwilger/.1password/agent.sock"
+        fi
+      '';
     };
     wlogout.enable = true;
     fuzzel = {
