@@ -900,6 +900,13 @@
             bind "m" { SwitchToMode "move"; }
             bind "=" { SwitchToMode "resize"; }
             bind "q" { Quit; }
+            bind "g" {
+              Run "lazygit" {
+                floating true
+                close_on_exit true
+              }
+              SwitchToMode "Normal"
+            }
           }
           shared_except "locked" {
             bind "F12" { SwitchToMode "Locked"; }
