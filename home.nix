@@ -491,6 +491,10 @@
 
     htop.enable = true;
 
+    helix = {
+      enable = true;
+    };
+
     neovim = {
       defaultEditor = true;
       enable = true;
