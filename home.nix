@@ -186,8 +186,6 @@
 
     sessionVariables = {
       NIX_BUILD_SHELL = "zsh";
-      VISUAL = "nvim";
-      EDITOR = "nvim";
     };
 
     # The home.packages option allows you to install Nix packages into your
@@ -493,6 +491,41 @@
 
     helix = {
       enable = true;
+      package = pkgs.evil-helix;
+      # defaultEditor = true;
+      settings = {
+        editor = {
+          scrolloff = 10;
+          shell = ["zsh" "-c"];
+          cursorline = true;
+          preview-completion-insert = false;
+          completion-trigger-len = 3;
+          auto-info = true;
+          bufferline = "never";
+          popup-border = "all";
+          lsp = {
+            display-messages = true;
+            display-inlay-hints = true;
+          };
+          cursor-shape = {
+            normal = "block";
+            insert = "bar";
+            select = "underline";
+          };
+          indent-guides = {
+            render = true;
+          };
+        };
+        keys = {
+          normal = {
+            "C-s" = ":w";
+          };
+          insert = {
+            j = { k = "normal_mode"; };
+            "C-s" = ":w";
+          };
+        };
+      };
     };
 
     neovim = {
