@@ -210,6 +210,8 @@
       ripgrep
       fd
       fzf
+      nil
+      cargo
     ];
   };
 
