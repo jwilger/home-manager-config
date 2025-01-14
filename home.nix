@@ -495,8 +495,7 @@
 
     helix = {
       enable = true;
-      package = pkgs.evil-helix;
-      defaultEditor = true;
+      defaultEditor = false;
       settings = {
         theme = "catppuccin_macchiato";
         editor = {
@@ -527,7 +526,6 @@
             "C-s" = ":w";
           };
           insert = {
-            j = { k = "normal_mode"; };
             "C-s" = ["normal_mode" ":w"];
           };
         };
@@ -535,7 +533,7 @@
     };
 
     neovim = {
-      # defaultEditor = true;
+      defaultEditor = true;
       enable = true;
       viAlias = true;
       vimAlias = true;
