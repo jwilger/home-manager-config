@@ -187,6 +187,7 @@
 
     sessionVariables = {
       NIX_BUILD_SHELL = "zsh";
+      PATH = "$HOME/.local/bin:$PATH";
     };
 
     # The home.packages option allows you to install Nix packages into your
