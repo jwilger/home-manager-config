@@ -163,6 +163,7 @@
     polarity = "dark";
     targets = {
       neovim.enable = false;
+      helix.enable = false;
     };
   };
 
@@ -494,9 +495,11 @@
     helix = {
       enable = true;
       package = pkgs.evil-helix;
-      # defaultEditor = true;
+      defaultEditor = true;
       settings = {
+        theme = "catppuccin_macchiato";
         editor = {
+          true-color = true;
           scrolloff = 10;
           shell = ["zsh" "-c"];
           cursorline = true;
@@ -524,14 +527,14 @@
           };
           insert = {
             j = { k = "normal_mode"; };
-            "C-s" = ":w";
+            "C-s" = ["normal_mode" ":w"];
           };
         };
       };
     };
 
     neovim = {
-      defaultEditor = true;
+      # defaultEditor = true;
       enable = true;
       viAlias = true;
       vimAlias = true;
