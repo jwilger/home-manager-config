@@ -193,6 +193,8 @@
     # The home.packages option allows you to install Nix packages into your
     # environment.
     packages = with pkgs; [
+      protonmail-bridge-gui
+      bluemail
       nautilus
       pavucontrol
       hyprpolkitagent
@@ -520,6 +522,10 @@
           indent-guides = {
             render = true;
           };
+          end-of-line-diagnostics = "hint";
+          inline-diagnostics = {
+            cursor-line = "warning";
+          };
         };
         keys = {
           normal = {
@@ -527,6 +533,47 @@
           };
           insert = {
             "C-s" = ["normal_mode" ":w"];
+          };
+        };
+      };
+      languages = {
+        language = [
+          {
+            name = "elixir";
+            scope = "source.elixir";
+            auto-format = true;
+            language-servers = ["nextls"];
+          }
+          {
+            name = "heex";
+            scope = "source.elixir";
+            auto-format = true;
+            language-servers = ["nextls" "elixir-ls"];
+          }
+        ];
+        language-server = {
+          nextls = {
+            command = "next_ls_1_18_1_otp27";
+            args = ["--stdio=true"];
+            configuration = {
+              extensions = {
+                credo = {
+                  enable = true;
+                };
+              };
+              experimental = {
+                completions = {
+                  enable = true;
+                };
+              };
+            };
+          };
+          elixir-ls = {
+            command = "elixir-ls";
+            configuration = {
+              dialyzerEnabled = true;
+              enableTestLenses = true;
+            };
           };
         };
       };
@@ -957,6 +1004,17 @@
 
       "solaar/config.yaml".source = ./solaar_config.yaml;
       "solaar/rules.yaml".source = ./solaar_rules.yaml;
+    };
+
+    desktopEntries = {
+      email = {
+      name = "Email";
+      exec = "bluemail --in-process-gpu";
+      terminal = false;
+      type = "Application";
+      categories = ["Network" "Email"];
+      mimeType = ["x-scheme-handler/mailto"];
+      };
     };
   };
 }
