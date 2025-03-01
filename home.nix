@@ -158,10 +158,11 @@
 
   stylix = {
     enable = true;
-    image = ./catppuccin-wallpapers/misc/cat-sound.png;
+    image = ./cat-sound.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     polarity = "dark";
     targets = {
+      hyprlock.enable = false;
       neovim.enable = false;
       helix.enable = false;
     };
@@ -193,6 +194,8 @@
     # The home.packages option allows you to install Nix packages into your
     # environment.
     packages = with pkgs; [
+      gh
+      dwt1-shell-color-scripts
       protonmail-bridge-gui
       bluemail
       nautilus
@@ -384,7 +387,7 @@
       enable = true;
       settings = {
         background = {
-          path = "${./catppuccin-wallpapers/misc/cat-sound.png}";
+          path = "${./cat-sound.png}";
           blur_passes = 2;
           contrast = 1;
           brightness = 0.5;
@@ -614,27 +617,28 @@
         enable = true;
       };
 
+      signing = {
+        format = "ssh";
+        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU";
+        signByDefault = true;
+        signer = "op-ssh-sign";
+      };
+
       extraConfig = {
         init.defaultBranch = "main";
-        commit.gpgsign = true;
         merge.conflictstyle = "zdiff3";
         merge.tool = "nvimdiff";
         diff.tool = "nvimdiff";
-        user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU";
-        gpg = {
-          format = "ssh";
-          ssh.allowedSignersFile = "${config.home.homeDirectory}/${config.xdg.configFile."ssh/allowed_signers".target}";
-          ssh.program = "op-ssh-sign";
-        };
         log.showSignature = true;
-
+        gpg = {
+          ssh.allowedSignersFile = "${config.home.homeDirectory}/${config.xdg.configFile."ssh/allowed_signers".target}";
+        };
         pull = {
           ff = "only";
         };
         push = {
           default = "current";
         };
-
         safe.directory = "/etc/nixos";
       };
     };
