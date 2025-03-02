@@ -12,20 +12,16 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    systemd.enable = true;
-    systemd.enableXdgAutostart = true;
     xwayland.enable = true;
 
     settings = {
       exec-once = [
-        "dbus-update-activation-environment --systemd --all WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "${pkgs.waybar}/bin/waybar"
-        "${pkgs._1password-gui}/bin/1password --silent"
-        "${pkgs.solaar}/bin/solaar -w hide"
+        "uwsm app -- ${pkgs.waybar}/bin/waybar"
+        "uwsm app -- ${pkgs._1password-gui}/bin/1password --silent"
+        "uwsm app -- ${pkgs.solaar}/bin/solaar -w hide"
       ];
       monitor = ",preferred,auto,auto";
-      "$terminal" = "kitty";
+      "$terminal" = "uwsm app -- kitty";
       general = {
         border_size = 1;
         gaps_in = 3;
@@ -88,10 +84,10 @@
       env = MOZ_ENABLE_WAYLAND, 1
       
       $mainMod = SUPER
-      $terminal = ${pkgs.kitty}/bin/kitty
-      $menu = ${pkgs.fuzzel}/bin/fuzzel
+      $terminal = uwsm app -- ${pkgs.kitty}/bin/kitty
+      $menu = uwsm app -- ${pkgs.fuzzel}/bin/fuzzel --launch-prefix="uswm app -- "
       $logout = ${pkgs.wlogout}/bin/wlogout
-      $browser = ${pkgs.firefox}/bin/firefox
+      $browser = uwsm app -- ${pkgs.firefox}/bin/firefox
       $filemanager = $terminal
       bind = $mainMod SHIFT,Q,exec,${pkgs.wlogout}/bin/wlogout
       bind = $mainMod, T,exec,$terminal
@@ -901,7 +897,7 @@
       enable = true;
       settings.main = {
         layer = "overlay";
-	terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.kitty}/bin/kitty";
         width = 40;
       };
     };
